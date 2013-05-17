@@ -1,9 +1,35 @@
-var world = document.getElementById( 'world' ),
+var layers = [],
+  objects = [],
+  
+  world = document.getElementById( 'world' ),
   viewport = document.getElementById( 'viewport' ),
   
   d = 0,
+  p = 400,
   worldXAngle = 0,
   worldYAngle = 0;
+
+viewport.style.webkitPerspective = p;
+viewport.style.MozPerspective = p;
+viewport.style.oPerspective = p;
+
+generate();
+
+function createCloud() {
+
+  var div = document.createElement( 'div'  );
+  div.className = 'cloudBase';
+  var x = 256 - ( Math.random() * 512 );
+  var y = 256 - ( Math.random() * 512 );
+  var z = 256 - ( Math.random() * 512 );
+  var t = 'translateX( ' + x + 'px ) translateY( ' + y + 'px ) translateZ( ' + z + 'px )';
+  div.style.webkitTransform = t;
+  div.style.MozTransform = t;
+  div.style.oTransform = t;
+  world.appendChild( div );
+  
+  return div;
+}
 
 window.addEventListener( 'mousewheel', onContainerMouseWheel );
 window.addEventListener( 'DOMMouseScroll', onContainerMouseWheel ); 
@@ -13,6 +39,18 @@ window.addEventListener( 'mousemove', function( e ) {
   worldXAngle = ( .5 - ( e.clientY / window.innerHeight ) ) * 180;
   updateView();
 } );
+
+function generate() {
+  objects = [];
+  if ( world.hasChildNodes() ) {
+    while ( world.childNodes.length >= 1 ) {
+      world.removeChild( world.firstChild );       
+    } 
+  }
+  for( var j = 0; j < 5; j++ ) {
+    objects.push( createCloud() );
+  }
+}
 
 function updateView() {
   var t = 'translateZ( ' + d + 'px ) rotateX( ' + worldXAngle + 'deg) rotateY( ' + worldYAngle + 'deg)';
